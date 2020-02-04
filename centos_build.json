@@ -1,0 +1,83 @@
+{
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "us-west-1",
+      "source_ami": "ami-070a1367",
+      "instance_type": "t2.micro",
+      "ssh_username": "centos",
+      "ami_name": "CentOS Linux 7 {{timestamp}}",
+      "tags": 
+      {
+        "OS_Version": "CentOS",
+        "Release": "7",
+        "Base_AMI_Name": "{{ .SourceAMIName }}",
+        "Extra": "{{ .SourceAMITags.TagName }}"
+      }
+    },
+    {
+        "type": "vsphere-iso",
+  
+        "vcenter_server":      "",
+        "username":            "administrator@vsphere.local",
+        "password":            "",
+        "insecure_connection": "true",
+        "vm_name": "CENTOS-Packer1",
+        "notes": "Build via Packer",
+        "datacenter": "Datacenter",
+        "host": "x.x.x.x",
+        "guest_os_type": "centos7_64Guest",
+  
+        "ssh_username": "root",
+        "ssh_password": "server",
+  
+        "CPUs":             1,
+        "RAM":              1024,
+        "RAM_reserve_all": false,
+  
+        "convert_to_template": false,
+  
+        "disk_controller_type":  "pvscsi",
+        "disk_size":        25000,
+        "disk_thin_provisioned": true,
+  
+        "network_card": "vmxnet3",
+  
+        "iso_paths": [
+          "[datastore1] ISO/centos7_64.iso"
+        ],
+        "iso_checksum": "5b61d5b378502e9cba8ba26b6696c92a",
+        "iso_checksum_type": "md5",
+        "floppy_files": [
+          "{{template_dir}}/ks.cfg"
+        ],
+        "boot_command": " inst.text inst.ks=hd:fd0:/ks.cfg "
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "bootstrap.sh",
+      "destination": "/tmp/bootstrap.sh"
+    },
+    {
+          "type": "file",
+          "source": "cleanup.sh",
+          "destination": "/tmp/cleanup.sh"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
+      "inline": [
+        "whoami",
+        "cd /tmp",
+        "chmod +x bootstrap.sh",
+        "chmod +x cleanup.sh",
+        "ls -alh /tmp",
+        "./bootstrap.sh",
+        "sleep 10",
+        "./cleanup.sh"
+      ]
+    }
+  ]
+}
