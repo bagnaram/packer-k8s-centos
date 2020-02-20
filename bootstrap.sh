@@ -28,6 +28,7 @@ yum -y install docker-ce docker-ce-selinux
 mkdir -p /etc/docker
 cat <<EOF > /etc/docker/daemon.json
 {
+  "exec-opts": ["native.cgroupdriver=systemd"],
   "storage-driver": "overlay2"
 }
 EOF
@@ -44,6 +45,10 @@ mkdir -p /var/lib/etcd/
 mkdir -p /etc/kubernetes/pki/
 chcon -R -t svirt_sandbox_file_t /var/lib/etcd
 chcon -R -t svirt_sandbox_file_t /etc/kubernetes/
+
+# Set the cloud provider in the image
+echo 'KUBELET_EXTRA_ARGS="--cloud-provider=external"' > /etc/sysconfig/kubelet
+
 
 systemctl enable --now kubelet
 

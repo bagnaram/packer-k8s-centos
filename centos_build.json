@@ -18,14 +18,19 @@
     {
         "type": "vsphere-iso",
   
-        "vcenter_server":      "",
+        "vcenter_server":      "10.192.208.140",
         "username":            "administrator@vsphere.local",
-        "password":            "",
+        "password":            "Admin!23",
         "insecure_connection": "true",
         "vm_name": "CENTOS-Packer1",
         "notes": "Build via Packer",
-        "datacenter": "Datacenter",
-        "host": "x.x.x.x",
+        "datacenter": "vcqaDC",
+        "host": "10.192.222.21",
+        "cluster": "cluster0",
+        "datastore": "local-0",
+        "network": "VM Network",
+        "network_card": "vmxnet3",
+
         "guest_os_type": "centos7_64Guest",
   
         "ssh_username": "root",
@@ -36,22 +41,16 @@
         "RAM_reserve_all": false,
   
         "convert_to_template": false,
+        "boot_order": "cdrom,disk,floppy",
   
-        "disk_controller_type":  "pvscsi",
-        "disk_size":        25000,
-        "disk_thin_provisioned": true,
-  
-        "network_card": "vmxnet3",
-  
+        "disk_size": 40000,
         "iso_paths": [
-          "[datastore1] ISO/centos7_64.iso"
+          "[local-0] CentOS-7-x86_64-NetInstall-1908.iso"
         ],
-        "iso_checksum": "5b61d5b378502e9cba8ba26b6696c92a",
-        "iso_checksum_type": "md5",
         "floppy_files": [
-          "{{template_dir}}/ks.cfg"
+          "http/ks.cfg"
         ],
-        "boot_command": " inst.text inst.ks=hd:fd0:/ks.cfg "
+        "boot_command": "<tab> inst.text inst.ks=hd:fd0:/ks.cfg <enter><enter>"
     }
   ],
   "provisioners": [
