@@ -39,6 +39,7 @@ Simply initiate the Packer build below:
 packer build -only=amazon-ebs centos_build.json
 ```
 
+## VSphere
 ###  Prepare infrastructure for VSphere
 
 The `centos_build.json` file contains a defination of what the source ISO should be. There are a number of parameters which need to be modified to match your build enviornment.
